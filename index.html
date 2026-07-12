@@ -7,7 +7,7 @@
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        /* Base Styles */
+        /* Estilos Base */
         body {
             background-color: #0f172a; 
             color: white;
@@ -23,7 +23,7 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* --- Styles: Timer & Streak --- */
+        /* --- Estilos: Temporizador y Racha --- */
         .barra-tiempo {
             transition: width 1s linear, background-color 0.5s ease;
         }
@@ -38,7 +38,7 @@
             to { text-shadow: 0 0 15px #ef4444, 0 0 25px #eab308; transform: scale(1.1); }
         }
 
-        /* --- Styles: Drag & Drop --- */
+        /* --- Estilos: Drag & Drop --- */
         .tarjeta-draggable {
             cursor: grab;
             transition: transform 0.2s, box-shadow 0.2s;
@@ -60,7 +60,7 @@
             transform: scale(1.02);
         }
 
-        /* --- Styles: Pattern (Grid) --- */
+        /* --- Estilos: Patrón (Grid) --- */
         .elemento-patron {
             transition: all 0.2s;
             cursor: pointer;
@@ -68,23 +68,23 @@
         }
         .elemento-patron:hover { transform: scale(1.05); }
         .elemento-patron.seleccionado {
-            background-color: #eab308; /* yellow-500 */
+            background-color: #eab308;
             border-color: #fef08a;
             box-shadow: 0 0 15px rgba(234, 179, 8, 0.6);
             color: #451a03;
         }
 
-        /* --- Styles: Custom Slider --- */
+        /* --- Estilos: Slider Personalizado --- */
         input[type=range] {
             accent-color: #3b82f6;
         }
 
-        /* --- Styles: Sortable List (NEW) --- */
+        /* --- Estilos: Lista para Ordenar --- */
         .item-ordenar {
             transition: transform 0.2s, background-color 0.2s;
         }
 
-        /* --- Visual Feedback --- */
+        /* --- Retroalimentación Visual --- */
         .feedback-correcto {
             background-color: rgba(34, 197, 94, 0.2) !important; 
             border-color: #22c55e !important;
@@ -109,7 +109,7 @@
             100% { transform: translateX(0); }
         }
 
-        /* Score Tracker */
+        /* Marcador de Puntaje */
         #marcador { transition: transform 0.3s, color 0.3s; }
         .marcador-aumento { color: #4ade80; transform: scale(1.2); }
         .marcador-disminucion { color: #f87171; transform: scale(0.9); }
@@ -117,68 +117,77 @@
 </head>
 <body class="min-h-screen flex flex-col items-center justify-center p-4">
 
-    <!-- HEADER: Sticky Scoreboard -->
+    <!-- CABECERA: Marcador Fijo -->
     <header id="cabecera" class="fixed top-0 left-0 w-full p-4 flex justify-between items-center bg-slate-800 shadow-md z-50">
         <div class="text-xl font-bold text-blue-400" id="nombre-header">📊 DataQuest</div>
         
-        <div class="flex items-center gap-3">
+        <div class="flex items-center gap-3" id="puntos-container">
             <div class="text-xl font-bold bg-slate-700 py-2 px-4 rounded-full border border-slate-600 shadow-inner flex items-center">
                 Points: <span id="marcador" class="inline-block transition-all duration-300 font-mono text-yellow-400 ml-2">0</span>
             </div>
-            <!-- Multiplier UI (Hidden initially) -->
+            <!-- Interfaz de Multiplicador -->
             <div id="ui-racha" class="hidden bg-orange-500/20 border border-orange-500 rounded-full px-3 py-1 font-bold text-orange-400">
                 <span class="fuego-animado mr-1">🔥</span> x<span id="multiplicador-valor">1</span>
             </div>
         </div>
 
-        <div class="text-lg hidden md:block">
+        <div class="text-lg hidden md:block" id="vidas-container">
             Lives: <span id="vidas" class="text-red-500">❤️❤️❤️</span>
         </div>
     </header>
 
-    <!-- SCREEN 1: Start Menu -->
+    <!-- PANTALLA 1: Menú de Inicio -->
     <div id="pantalla-inicio" class="pantalla-activa flex-col items-center max-w-2xl text-center mt-16">
         <h1 class="text-5xl font-extrabold mb-6 text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-emerald-400">
             Statistics Academy
         </h1>
         <p class="text-xl text-slate-300 mb-8 leading-relaxed">
-            The missions will constantly change. Show your speed to keep the streak alive and multiply your points. Are you ready?
+            Master the types of variables and sampling techniques. Be fast to keep your streak alive!
         </p>
         
-        <!-- Name Input -->
+        <!-- Entrada de Nombre -->
         <input type="text" id="input-nombre" placeholder="Enter your agent name" class="text-center bg-slate-800 border-2 border-slate-600 text-white text-2xl rounded-full py-3 px-6 mb-8 w-full max-w-md focus:outline-none focus:border-blue-400 transition" autocomplete="off">
 
-        <button onclick="iniciarJuego()" class="bg-blue-600 hover:bg-blue-500 text-white font-bold py-4 px-10 rounded-full text-2xl transition transform hover:scale-105 shadow-lg shadow-blue-500/50 w-full max-w-md">
-            Start Mission 🚀
-        </button>
+        <div class="flex flex-col gap-4 w-full max-w-md">
+            <button onclick="iniciarJuego(false)" class="bg-blue-600 hover:bg-blue-500 text-white font-bold py-4 px-10 rounded-full text-2xl transition transform hover:scale-105 shadow-lg shadow-blue-500/50 w-full">
+                Start Mission 🚀
+            </button>
+            <button onclick="iniciarJuego(true)" class="bg-slate-700 hover:bg-slate-600 border-2 border-slate-500 text-slate-300 font-bold py-3 px-10 rounded-full text-xl transition transform hover:scale-105 shadow-lg w-full">
+                Training Simulator 🎯
+            </button>
+        </div>
         <p id="error-nombre" class="text-red-400 font-bold mt-4 opacity-0 transition-opacity">You must enter your name to continue!</p>
     </div>
 
-    <!-- SCREEN 2: Game (Dynamic Mechanics) -->
+    <!-- PANTALLA 2: Juego -->
     <div id="pantalla-juego" class="pantalla-oculta flex-col w-full max-w-4xl mt-20 relative">
         
-        <!-- Progress & Timer -->
+        <!-- Progreso y Temporizador -->
         <div class="text-center mb-6 w-full max-w-2xl mx-auto">
             <div class="flex justify-between items-center mb-2 px-2">
-                <span class="text-sm font-semibold text-slate-400 uppercase tracking-widest" id="indicador-ronda">Data: 0 / 10</span>
-                <span class="text-sm font-bold text-slate-300">⏱️ <span id="tiempo-texto">15</span>s</span>
+                <span class="text-sm font-semibold text-slate-400 uppercase tracking-widest" id="indicador-ronda">Mission: 0 / 10</span>
             </div>
             
-            <!-- Time Bar -->
-            <div class="w-full bg-slate-700 h-3 rounded-full overflow-hidden shadow-inner">
-                <div id="barra-tiempo-fill" class="h-full bg-green-500 w-full barra-tiempo"></div>
+            <div id="contenedor-tiempo">
+                <div class="flex justify-end items-center mb-2 px-2">
+                    <span class="text-sm font-bold text-slate-300">⏱️ <span id="tiempo-texto">15</span>s</span>
+                </div>
+                <!-- Barra de Tiempo -->
+                <div class="w-full bg-slate-700 h-3 rounded-full overflow-hidden shadow-inner">
+                    <div id="barra-tiempo-fill" class="h-full bg-green-500 w-full barra-tiempo"></div>
+                </div>
             </div>
 
-            <!-- Question Text -->
-            <h2 id="texto-pregunta" class="text-2xl md:text-3xl font-bold mt-6 text-white min-h-[80px] flex items-center justify-center bg-slate-800 p-4 rounded-xl border border-slate-700 shadow-md">
+            <!-- Texto de la Pregunta -->
+            <h2 id="texto-pregunta" class="text-xl md:text-2xl font-bold mt-6 text-white min-h-[80px] flex items-center justify-center bg-slate-800 p-4 rounded-xl border border-slate-700 shadow-md">
                 Loading mission...
             </h2>
         </div>
 
-        <!-- MECHANICS CONTAINER -->
-        <div id="area-mecanicas" class="relative w-full min-h-[300px]">
+        <!-- CONTENEDOR DE MECÁNICAS -->
+        <div id="area-mecanicas" class="relative w-full min-h-[300px] flex flex-col items-center">
             
-            <!-- Mechanic 1: Drag and Drop -->
+            <!-- Mecánica 1: Drag and Drop -->
             <div id="ui-dragdrop" class="hidden flex-col w-full">
                 <div class="flex justify-center mb-12 h-24 relative z-10">
                     <div id="tarjeta-dato" class="tarjeta-draggable bg-gradient-to-br from-indigo-500 to-purple-600 text-white font-bold text-xl py-4 px-6 rounded-xl shadow-xl border border-indigo-400 flex items-center justify-center w-64 md:w-80 text-center absolute" draggable="true">
@@ -201,7 +210,7 @@
                 </div>
             </div>
 
-            <!-- Mechanic 2: Slider -->
+            <!-- Mecánica 2: Slider -->
             <div id="ui-slider" class="hidden flex-col items-center w-full bg-slate-800 p-8 rounded-2xl border border-slate-700 shadow-lg">
                 <div class="text-6xl font-black text-blue-400 mb-8 font-mono" id="valor-slider-display">1</div>
                 <input type="range" id="input-slider" min="1" max="20" value="1" class="w-full max-w-xl h-4 bg-slate-900 rounded-lg appearance-none cursor-pointer mb-8 outline-none border border-slate-600">
@@ -210,27 +219,60 @@
                 </button>
             </div>
 
-            <!-- Mechanic 3: Grid Pattern -->
+            <!-- Mecánica 3: Grid Pattern -->
             <div id="ui-patron" class="hidden flex-col items-center w-full">
                 <div id="grid-patron" class="grid grid-cols-5 md:grid-cols-5 gap-3 mb-8 w-full max-w-2xl">
-                    <!-- Elements generated dynamically -->
+                    <!-- Elementos generados dinámicamente -->
                 </div>
                 <button onclick="evaluarPatron()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 px-12 rounded-full text-xl transition transform hover:scale-105 shadow-lg">
                     Evaluate Selection ✓
                 </button>
             </div>
 
-            <!-- Mechanic 4: Sortable List -->
+            <!-- Mecánica 4: Lista para Ordenar -->
             <div id="ui-ordenar" class="hidden flex-col items-center w-full">
                 <div id="lista-ordenar" class="w-full max-w-md flex flex-col gap-3 mb-8">
-                    <!-- Items generated dynamically -->
+                    <!-- Elementos generados dinámicamente -->
                 </div>
                 <button onclick="evaluarOrdenar()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 px-12 rounded-full text-xl transition transform hover:scale-105 shadow-lg">
                     Evaluate Order ✓
                 </button>
             </div>
 
-            <!-- Floating Feedback Message -->
+            <!-- Mecánica 5: Decisión Binaria (Customizable) -->
+            <div id="ui-decision" class="hidden flex-col items-center w-full">
+                <div id="decision-card" class="bg-slate-700 text-white font-bold text-xl md:text-2xl p-8 rounded-2xl shadow-xl border-2 border-slate-500 text-center w-full max-w-lg mb-8 flex items-center justify-center min-h-[160px]">
+                    Statement goes here
+                </div>
+                <div class="flex gap-4 w-full max-w-lg">
+                    <button id="btn-decision-izq" onclick="evaluarDecision(0)" class="flex-1 bg-blue-600 hover:bg-blue-500 text-white font-bold py-4 rounded-xl text-xl transition transform hover:scale-105 shadow-lg flex justify-center items-center gap-2">
+                    </button>
+                    <button id="btn-decision-der" onclick="evaluarDecision(1)" class="flex-1 bg-purple-600 hover:bg-purple-500 text-white font-bold py-4 rounded-xl text-xl transition transform hover:scale-105 shadow-lg flex justify-center items-center gap-2">
+                    </button>
+                </div>
+            </div>
+
+            <!-- Mecánica 6: El Intruso (Odd One Out) -->
+            <div id="ui-intruso" class="hidden w-full max-w-2xl grid grid-cols-1 md:grid-cols-2 gap-4">
+                <!-- Botones generados dinámicamente -->
+            </div>
+
+            <!-- Mecánica 7: Completar Reporte (Fill-in-the-blanks) -->
+            <div id="ui-completar" class="hidden flex-col items-center w-full">
+                <div id="contenedor-completar-texto" class="text-xl md:text-2xl leading-loose bg-slate-800 p-8 rounded-2xl border-2 border-slate-600 mb-8 w-full max-w-3xl text-left shadow-lg">
+                    <!-- Texto con dropdowns generado dinámicamente -->
+                </div>
+                <button onclick="evaluarCompletar()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 px-12 rounded-full text-xl transition transform hover:scale-105 shadow-lg">
+                    Submit Report ✓
+                </button>
+            </div>
+
+            <!-- Mecánica 8: Cuadrantes Rápidos (Target Practice) -->
+            <div id="ui-cuadrantes" class="hidden w-full max-w-2xl grid grid-cols-2 gap-4">
+                <!-- Botones generados dinámicamente -->
+            </div>
+
+            <!-- Mensaje de Feedback Flotante -->
             <div id="mensaje-feedback" class="absolute inset-0 flex items-center justify-center pointer-events-none opacity-0 transition-opacity z-50">
                 <div id="feedback-texto" class="bg-slate-900 text-white text-3xl font-black px-8 py-4 rounded-2xl shadow-2xl border-4 border-transparent text-center w-[90%] md:w-auto"></div>
             </div>
@@ -238,61 +280,64 @@
         </div>
     </div>
 
-    <!-- SCREEN 3: Final Results -->
+    <!-- PANTALLA 3: Resultados Finales -->
     <div id="pantalla-resultados" class="pantalla-oculta flex-col items-center max-w-2xl text-center mt-16">
         <h1 id="titulo-resultado" class="text-5xl font-extrabold mb-4">Mission Complete!</h1>
-        <h2 id="nombre-final" class="text-3xl text-blue-400 font-bold mb-8">Unknown Agent</h2>
+        <h2 id="nombre-final" class="text-3xl text-blue-400 font-bold mb-4">Unknown Agent</h2>
         
-        <div class="bg-slate-800 border-2 border-slate-600 rounded-2xl p-8 mb-8 shadow-2xl w-full">
+        <div id="puntuacion-final-container" class="bg-slate-800 border-2 border-slate-600 rounded-2xl p-8 mb-8 shadow-2xl w-full">
             <p class="text-lg text-slate-400 font-semibold mb-2">TOTAL SCORE</p>
             <h2 id="puntuacion-final" class="text-7xl font-black text-yellow-400 mb-4 font-mono">0</h2>
-            <p id="mensaje-evaluacion" class="text-2xl font-bold mt-4"></p>
         </div>
 
-        <button onclick="location.reload()" class="bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-3 px-8 rounded-full text-xl transition transform hover:scale-105">
+        <p id="mensaje-evaluacion" class="text-2xl font-bold mb-8"></p>
+
+        <button id="btn-reiniciar" onclick="location.reload()" class="bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-3 px-8 rounded-full text-xl transition transform hover:scale-105">
             Play Again 🔄
         </button>
     </div>
 
     <script>
         // =====================================================================
-        // 🗄️ QUESTION DATABASE (ENGLISH)
+        // 🗄️ BASE DE DATOS - MODO TUTORIAL (PRÁCTICA GUIADA)
         // =====================================================================
-        const preguntasDB = [
-            // --- TYPE 1: DRAG & DROP (Categories: nominal, ordinal, discrete, continuous) ---
-            { tipo: "drag_drop", texto: "🏎️ Classify: Exact time to cross the finish line (e.g., 45.32s)", correcta: "continuous" },
-            { tipo: "drag_drop", texto: "🚀 Classify: Starfleet rank (Cadet, Lieutenant, Captain)", correcta: "ordinal" },
-            { tipo: "drag_drop", texto: "🎨 Classify: Uniform color (Red, Blue, White)", correcta: "nominal" },
-            { tipo: "drag_drop", texto: "👽 Classify: Number of moons orbiting a planet", correcta: "discrete" },
-            { tipo: "drag_drop", texto: "🍔 Classify: Customer satisfaction level (Bad, Regular, Good)", correcta: "ordinal" },
-            { tipo: "drag_drop", texto: "💉 Classify: Blood type (A, B, AB, O)", correcta: "nominal" },
-            { tipo: "drag_drop", texto: "📏 Classify: Height of students in class (e.g., 1.75m)", correcta: "continuous" },
-            { tipo: "drag_drop", texto: "👨‍👩‍👧‍👦 Classify: Number of children per family", correcta: "discrete" },
-
-            // --- TYPE 2: SLIDER ---
-            { tipo: "slider", texto: "🏭 Systematic Sampling: You have 100 phones and need a sample of 20. Adjust the step (k).", min: 1, max: 10, correcta: 5 },
-            { tipo: "slider", texto: "🧪 Laboratory: Adjust the boiling temperature of water at sea level (°C).", min: 90, max: 110, correcta: 100 },
-            { tipo: "slider", texto: "🎲 Probability: How many faces does a standard die have?", min: 1, max: 12, correcta: 6 },
-            { tipo: "slider", texto: "📊 If you divide 500 people into 5 equal strata, how many are in each stratum?", min: 10, max: 200, correcta: 100 },
-
-            // --- TYPE 3: GRID PATTERN SELECTION ---
-            { tipo: "patron", texto: "🏘️ Systematic Sampling: k=3. Start at house 2.", totalElementos: 10, correctas: [2, 5, 8], icono: "🏠" },
-            { tipo: "patron", texto: "🍕 Audit: Select branches 1 and 5.", totalElementos: 5, correctas: [1, 5], icono: "🍕" },
-            { tipo: "patron", texto: "🌳 Cluster Sampling: Check all the even-numbered plots.", totalElementos: 6, correctas: [2, 4, 6], icono: "🌳" },
-            { tipo: "patron", texto: "🧑‍🎓 Select students 3, 6, and 9 from the list.", totalElementos: 9, correctas: [3, 6, 9], icono: "🧑‍🎓" },
-
-            // --- TYPE 4: SORTABLE LIST ---
-            // 'correcta' must be the array in the EXACT correct order.
-            { tipo: "ordenar", texto: "📊 Order these variables by hierarchy (Lowest to Highest level of measurement)", correcta: ["Nominal", "Ordinal", "Interval", "Ratio"] },
-            { tipo: "ordenar", texto: "📝 Order the steps of a basic statistical study", correcta: ["Collect Data", "Organize Data", "Analyze Data", "Interpret Results"] },
-            { tipo: "ordenar", texto: "🥉 Order these marathon results from fastest to slowest", correcta: ["1st Place", "2nd Place", "3rd Place", "4th Place"] }
+        const preguntasPractica = [
+            { tipo: "drag_drop", texto: "[TUTORIAL] Tap the card, then tap the 'Nominal' category (or drag it).", correcta: "nominal" },
+            { tipo: "slider", texto: "[TUTORIAL] Move the slider until the number is exactly 15, then confirm.", min: 1, max: 20, correcta: 15 },
+            { tipo: "patron", texto: "[TUTORIAL] Tap house #2 and #4 to select them, then Evaluate.", totalElementos: 5, correctas: [2, 4], icono: "🏠" },
+            { tipo: "ordenar", texto: "[TUTORIAL] Use the arrows (⬆️⬇️) to order alphabetically: A, B, C.", correcta: ["A", "B", "C"] },
+            { tipo: "decision", texto: "[TUTORIAL] Tap the 'True' button to pass this test.", opciones: ["False", "True"], correcta: 1 },
+            { tipo: "intruso", texto: "[TUTORIAL] Find the odd one out (Tap the fruit).", opciones: ["Car", "Bus", "Apple", "Train"], correcta: 2 },
+            { tipo: "completar", texto: "[TUTORIAL] Select 'Data' in the first box {0} and 'Graph' in the second box {1}.", opciones: [["Data", "Noise"], ["Graph", "Map"]], correctas: [0, 0] },
+            { tipo: "cuadrantes", texto: "[TUTORIAL] Quick tap the 'Continuous' button.", opciones: ["Nominal", "Ordinal", "Discrete", "Continuous"], correcta: 3 }
         ];
 
-        // --- GAME ENGINE ---
-        const PREGUNTAS_POR_RONDA = 6; 
-        const TIEMPO_POR_PREGUNTA = 15; // Seconds
+        // =====================================================================
+        // 🗄️ BASE DE DATOS - JUEGO REAL (INGLÉS)
+        // =====================================================================
+        const preguntasDB = [
+            { tipo: "drag_drop", texto: "Classify: Exact time to cross the finish line (e.g., 45.32s)", correcta: "continuous" },
+            { tipo: "drag_drop", texto: "Classify: Starfleet rank (Cadet, Lieutenant, Captain)", correcta: "ordinal" },
+            { tipo: "slider", texto: "Systematic Sampling: Population 200, needed sample 20. Adjust the step (k).", min: 1, max: 20, correcta: 10 },
+            { tipo: "patron", texto: "Systematic Sampling: k=3. Start at house 2. Select the pattern.", totalElementos: 10, correctas: [2, 5, 8], icono: "🏠" },
+            { tipo: "ordenar", texto: "Order the levels of measurement from Lowest to Highest information.", correcta: ["Nominal", "Ordinal", "Interval", "Ratio"] },
+            { tipo: "decision", texto: "In Stratified Sampling, the population is divided into similar groups.", opciones: ["False", "True"], correcta: 1 },
+            { tipo: "decision", texto: "Testing 50 random lightbulbs out of a shipment of 10,000.", opciones: ["Population", "Sample"], correcta: 1 },
+            { tipo: "intruso", texto: "Find the odd one out (Look for the DISCRETE variable)", opciones: ["Weight (kg)", "Height (cm)", "Number of children", "Temperature (°C)"], correcta: 2 },
+            {
+                tipo: "completar",
+                texto: "To measure stress (a {0} variable), the researcher divided employees by department and selected 5 from each (a {1} sampling).",
+                opciones: [ ["Nominal", "Ordinal", "Continuous"], ["Systematic", "Stratified", "Cluster"] ],
+                correctas: [1, 1]
+            },
+            { tipo: "cuadrantes", texto: "Quick Tap! 'Customer Satisfaction Rating (1-5 stars)' is a variable:", opciones: ["Nominal", "Ordinal", "Discrete", "Continuous"], correcta: 1 }
+        ];
 
-        // --- GAME STATE ---
+        // --- MOTOR DEL JUEGO ---
+        const PREGUNTAS_POR_RONDA = 8; 
+        const TIEMPO_POR_PREGUNTA = 20; // Segundos
+
+        // --- ESTADO DEL JUEGO ---
         let nombreAgente = "";
         let puntaje = 0;
         let vidas = 3;
@@ -300,14 +345,14 @@
         let preguntasBarajadas = [];
         let preguntaActualData = null;
         let bloqueado = false; 
+        let esModoPractica = false; // Flag para el simulador
 
-        // Gamification State
         let rachaAciertos = 0;
         let multiplicadorBase = 1;
         let tiempoRestante = 0;
         let timerInterval = null;
 
-        // DOM Elements
+        // Elementos DOM
         const elMarcador = document.getElementById('marcador');
         const elVidas = document.getElementById('vidas');
         const elFeedbackContainer = document.getElementById('mensaje-feedback');
@@ -317,7 +362,7 @@
         const uiRacha = document.getElementById('ui-racha');
         const multiplicadorValor = document.getElementById('multiplicador-valor');
 
-        // --- UTILS ---
+        // --- UTILIDADES ---
         function barajarArray(array) {
             let arrCopia = [...array];
             for (let i = arrCopia.length - 1; i > 0; i--) {
@@ -332,8 +377,8 @@
             document.getElementById(idMostrar).classList.replace('pantalla-oculta', 'pantalla-activa');
         }
 
-        // --- MAIN FLOW ---
-        function iniciarJuego() {
+        // --- FLUJO PRINCIPAL ---
+        function iniciarJuego(esPractica) {
             const inputNombre = document.getElementById('input-nombre').value.trim();
             if(inputNombre === "") {
                 document.getElementById('error-nombre').style.opacity = '1';
@@ -342,8 +387,8 @@
 
             nombreAgente = inputNombre;
             document.getElementById('nombre-header').innerText = `Agent ${nombreAgente}`;
+            esModoPractica = esPractica;
             
-            // Reset state
             puntaje = 0;
             vidas = 3;
             rachaAciertos = 0;
@@ -352,48 +397,66 @@
             
             actualizarUI();
             
-            let todasLasPreguntasMezcladas = barajarArray(preguntasDB);
-            preguntasBarajadas = todasLasPreguntasMezcladas.slice(0, PREGUNTAS_POR_RONDA);
+            if (esModoPractica) {
+                preguntasBarajadas = preguntasPractica; // Orden fijo para tutorial
+                document.getElementById('contenedor-tiempo').style.visibility = 'hidden';
+                document.getElementById('vidas-container').style.visibility = 'hidden';
+                document.getElementById('puntos-container').style.visibility = 'hidden';
+            } else {
+                let todasLasPreguntasMezcladas = barajarArray(preguntasDB);
+                preguntasBarajadas = todasLasPreguntasMezcladas.slice(0, PREGUNTAS_POR_RONDA);
+                document.getElementById('contenedor-tiempo').style.visibility = 'visible';
+                document.getElementById('vidas-container').style.visibility = 'visible';
+                document.getElementById('puntos-container').style.visibility = 'visible';
+            }
             
             cambiarPantalla('pantalla-inicio', 'pantalla-juego');
             cargarPregunta();
         }
 
         function cargarPregunta() {
-            if (vidas <= 0) return finalizarJuego(false);
+            if (!esModoPractica && vidas <= 0) return finalizarJuego(false);
             if (preguntaActualIndex >= preguntasBarajadas.length) return finalizarJuego(true);
 
             bloqueado = false;
             preguntaActualData = preguntasBarajadas[preguntaActualIndex];
             
-            // Update Texts
-            document.getElementById('indicador-ronda').innerText = `Mission: ${preguntaActualIndex + 1} / ${preguntasBarajadas.length}`;
-            document.getElementById('texto-pregunta').innerText = preguntaActualData.texto;
+            let indicadorTxt = esModoPractica ? `Training: ${preguntaActualIndex + 1} / ${preguntasBarajadas.length}` : `Mission: ${preguntaActualIndex + 1} / ${preguntasBarajadas.length}`;
+            document.getElementById('indicador-ronda').innerText = indicadorTxt;
 
-            // Hide all mechanics
+            // Ocultar TODAS las mecánicas
             document.getElementById('ui-dragdrop').classList.add('hidden');
             document.getElementById('ui-slider').classList.add('hidden');
             document.getElementById('ui-patron').classList.add('hidden');
             document.getElementById('ui-ordenar').classList.add('hidden');
+            document.getElementById('ui-decision').classList.add('hidden');
+            document.getElementById('ui-intruso').classList.add('hidden');
+            document.getElementById('ui-completar').classList.add('hidden');
+            document.getElementById('ui-cuadrantes').classList.add('hidden');
 
-            // Load specific mechanic
+            document.getElementById('texto-pregunta').innerText = preguntaActualData.texto;
+
+            // Cargar mecánica
             if (preguntaActualData.tipo === "drag_drop") prepararDragDrop();
             else if (preguntaActualData.tipo === "slider") prepararSlider();
             else if (preguntaActualData.tipo === "patron") prepararPatron();
             else if (preguntaActualData.tipo === "ordenar") prepararOrdenar();
+            else if (preguntaActualData.tipo === "decision") prepararDecision();
+            else if (preguntaActualData.tipo === "intruso") prepararIntruso();
+            else if (preguntaActualData.tipo === "completar") prepararCompletar();
+            else if (preguntaActualData.tipo === "cuadrantes") prepararCuadrantes();
 
-            // Start Timer
-            iniciarTemporizador();
+            if (!esModoPractica) iniciarTemporizador();
         }
 
-        // --- TIMER ---
+        // --- TEMPORIZADOR ---
         function iniciarTemporizador() {
             clearInterval(timerInterval);
             tiempoRestante = TIEMPO_POR_PREGUNTA;
             actualizarBarraTiempo();
 
             timerInterval = setInterval(() => {
-                if(bloqueado) return; // Pause time if already answered
+                if(bloqueado) return;
                 
                 tiempoRestante--;
                 actualizarBarraTiempo();
@@ -415,49 +478,53 @@
             else barraTiempoFill.className = 'h-full w-full barra-tiempo bg-red-500';
         }
 
-        // --- EVALUATION & STREAKS ---
+        // --- EVALUACIÓN GLOBAL ---
         function procesarResultadoGlobal(esCorrecto, mensajeExplicacion) {
             if(bloqueado) return;
             bloqueado = true;
-            clearInterval(timerInterval);
+            if(!esModoPractica) clearInterval(timerInterval);
 
             if (esCorrecto) {
-                rachaAciertos++;
-                
-                // Calculate Multiplier
-                if (rachaAciertos >= 6) multiplicadorBase = 3;
-                else if (rachaAciertos >= 3) multiplicadorBase = 2;
-                else multiplicadorBase = 1;
+                if (!esModoPractica) {
+                    rachaAciertos++;
+                    if (rachaAciertos >= 6) multiplicadorBase = 3;
+                    else if (rachaAciertos >= 3) multiplicadorBase = 2;
+                    else multiplicadorBase = 1;
 
-                const puntosGanados = 100 * multiplicadorBase;
-                puntaje += puntosGanados;
-                
-                let msgExtra = multiplicadorBase > 1 ? ` (x${multiplicadorBase})` : '';
-                mostrarFeedback(`CORRECT! +${puntosGanados}${msgExtra}`, "border-green-500 text-green-400", true);
+                    const puntosGanados = 100 * multiplicadorBase;
+                    puntaje += puntosGanados;
+                    let msgExtra = multiplicadorBase > 1 ? ` (x${multiplicadorBase})` : '';
+                    mostrarFeedback(`CORRECT! +${puntosGanados}${msgExtra}`, "border-green-500 text-green-400", true);
+                } else {
+                    // Feedback de entrenamiento
+                    mostrarFeedback(`PERFECT!`, "border-green-500 text-green-400", true);
+                }
             } else {
-                // Lose streak and life
-                rachaAciertos = 0;
-                multiplicadorBase = 1;
-                vidas -= 1;
+                if (!esModoPractica) {
+                    rachaAciertos = 0;
+                    multiplicadorBase = 1;
+                    vidas -= 1;
+                    mostrarFeedback(`ERROR! \n${mensajeExplicacion}`, "border-red-500 text-red-400", false);
+                } else {
+                    // Feedback de entrenamiento (No pierde vidas)
+                    mostrarFeedback(`NOT QUITE! \n${mensajeExplicacion}`, "border-yellow-500 text-yellow-400", false);
+                }
                 
-                mostrarFeedback(`ERROR! \n${mensajeExplicacion}`, "border-red-500 text-red-400", false);
                 document.body.style.animation = 'vibrar 0.4s';
                 setTimeout(() => document.body.style.animation = '', 400);
             }
 
             actualizarUI();
-
             setTimeout(() => {
                 preguntaActualIndex++;
                 cargarPregunta();
-            }, 3000); // Wait 3 seconds to let them read the feedback before next question
+            }, 2500); 
         }
 
         function actualizarUI() {
             elMarcador.innerText = puntaje;
             elVidas.innerText = '❤️'.repeat(vidas) || '💀';
-
-            if (multiplicadorBase > 1) {
+            if (multiplicadorBase > 1 && !esModoPractica) {
                 uiRacha.classList.remove('hidden');
                 multiplicadorValor.innerText = multiplicadorBase;
             } else {
@@ -470,22 +537,46 @@
             elFeedbackTexto.className = `bg-slate-900 text-2xl md:text-3xl font-black px-8 py-6 rounded-2xl shadow-2xl border-4 text-center w-[90%] md:w-auto ${clasesColor}`;
             elFeedbackContainer.style.opacity = '1';
 
-            if(acierto) elMarcador.classList.add('marcador-aumento');
-            else elMarcador.classList.add('marcador-disminucion');
+            if(!esModoPractica) {
+                if(acierto) elMarcador.classList.add('marcador-aumento');
+                else elMarcador.classList.add('marcador-disminucion');
+                setTimeout(() => elMarcador.classList.remove('marcador-aumento', 'marcador-disminucion'), 300);
+            }
             
-            setTimeout(() => elMarcador.classList.remove('marcador-aumento', 'marcador-disminucion'), 300);
-            setTimeout(() => elFeedbackContainer.style.opacity = '0', 2800);
+            setTimeout(() => elFeedbackContainer.style.opacity = '0', 2300);
         }
 
         function finalizarJuego(completado) {
-            clearInterval(timerInterval);
+            if(!esModoPractica) clearInterval(timerInterval);
             document.getElementById('cabecera').style.display = 'none';
             cambiarPantalla('pantalla-juego', 'pantalla-resultados');
             
             document.getElementById('nombre-final').innerText = `Agent: ${nombreAgente}`;
-            document.getElementById('puntuacion-final').innerText = puntaje;
             const titulo = document.getElementById('titulo-resultado');
             const mensaje = document.getElementById('mensaje-evaluacion');
+            const btnReiniciar = document.getElementById('btn-reiniciar');
+
+            if (esModoPractica) {
+                titulo.innerText = "Training Complete! 🎯";
+                titulo.className = "text-5xl font-extrabold mb-4 text-blue-400";
+                mensaje.innerText = "You are now fully trained and ready for the real missions.";
+                mensaje.className = "text-2xl font-bold mt-4 text-slate-300";
+                document.getElementById('puntuacion-final-container').style.display = 'none';
+                
+                // Cambiar el botón para que inicie el juego sin recargar
+                btnReiniciar.innerText = "Start Real Mission 🚀";
+                btnReiniciar.onclick = () => {
+                    document.getElementById('cabecera').style.display = 'flex';
+                    cambiarPantalla('pantalla-resultados', 'pantalla-inicio');
+                    // Resetear el onclick al original para el futuro
+                    btnReiniciar.onclick = () => location.reload();
+                    btnReiniciar.innerText = "Play Again 🔄";
+                };
+                return;
+            }
+
+            document.getElementById('puntuacion-final-container').style.display = 'block';
+            document.getElementById('puntuacion-final').innerText = puntaje;
 
             if (!completado) {
                 titulo.innerText = "Mission Failed! 💥";
@@ -495,15 +586,16 @@
             } else {
                 titulo.innerText = "Operation Successful! 🏆";
                 titulo.className = "text-5xl font-extrabold mb-4 text-emerald-400";
-                
                 mensaje.innerText = puntaje >= 800 ? "Legend Rank! You are a fast statistics master." : "Good job, you have secured the data.";
                 mensaje.className = "text-2xl font-bold mt-4 text-yellow-400";
             }
         }
 
         // ==========================================
-        // MECHANIC 1: DRAG & DROP
+        // MECÁNICAS DE JUEGO (FUNCIONES)
         // ==========================================
+        
+        // 1. DRAG & DROP
         const elTarjeta = document.getElementById('tarjeta-dato');
         const zonasDrop = document.querySelectorAll('.zona-drop');
         let tarjetaSeleccionadaTactil = false;
@@ -511,209 +603,216 @@
         function prepararDragDrop() {
             document.getElementById('ui-dragdrop').classList.remove('hidden');
             document.getElementById('ui-dragdrop').classList.add('flex');
-            
             elTarjeta.innerText = "?";
             elTarjeta.style.transform = 'translateY(-50px) scale(0)';
             elTarjeta.style.opacity = '0';
             tarjetaSeleccionadaTactil = false;
-            elTarjeta.style.boxShadow = "";
-            
             zonasDrop.forEach(z => z.classList.remove('feedback-correcto', 'feedback-incorrecto'));
-
             setTimeout(() => {
                 elTarjeta.style.transition = 'transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.4s';
                 elTarjeta.style.transform = 'translateY(0) scale(1)';
                 elTarjeta.style.opacity = '1';
             }, 50);
         }
-
-        elTarjeta.addEventListener('dragstart', (e) => {
-            if(bloqueado) { e.preventDefault(); return; }
-            e.dataTransfer.setData('text/plain', 'tarjeta');
-            setTimeout(() => elTarjeta.style.opacity = '0.5', 0);
-        });
+        elTarjeta.addEventListener('dragstart', (e) => { if(!bloqueado) { e.dataTransfer.setData('text/plain', 'tarjeta'); setTimeout(() => elTarjeta.style.opacity = '0.5', 0); }});
         elTarjeta.addEventListener('dragend', () => elTarjeta.style.opacity = '1');
-
         zonasDrop.forEach(zona => {
             zona.addEventListener('dragover', (e) => { e.preventDefault(); if(!bloqueado) zona.classList.add('drag-over'); });
             zona.addEventListener('dragleave', () => zona.classList.remove('drag-over'));
-            
             zona.addEventListener('drop', (e) => {
-                e.preventDefault();
-                zona.classList.remove('drag-over');
-                if(e.dataTransfer.getData('text/plain') === 'tarjeta' && !bloqueado) {
-                    evaluarDragDrop(zona);
-                }
+                e.preventDefault(); zona.classList.remove('drag-over');
+                if(e.dataTransfer.getData('text/plain') === 'tarjeta' && !bloqueado) evaluarDragDrop(zona);
             });
-            
-            zona.addEventListener('click', () => {
-                if (tarjetaSeleccionadaTactil && !bloqueado) evaluarDragDrop(zona);
-            });
+            zona.addEventListener('click', () => { if (tarjetaSeleccionadaTactil && !bloqueado) evaluarDragDrop(zona); });
         });
-
-        elTarjeta.addEventListener('click', () => {
-            if(bloqueado || preguntaActualData.tipo !== "drag_drop") return;
-            tarjetaSeleccionadaTactil = true;
-            elTarjeta.style.boxShadow = "0 0 20px #3b82f6";
-            elTarjeta.style.transform = "scale(1.05)";
-        });
-
+        elTarjeta.addEventListener('click', () => { if(!bloqueado && preguntaActualData.tipo === "drag_drop") { tarjetaSeleccionadaTactil = true; elTarjeta.style.transform = "scale(1.05)"; }});
         function evaluarDragDrop(zonaElemento) {
-            const categoriaElegida = zonaElemento.dataset.categoria;
-            const esCorrecto = (categoriaElegida === preguntaActualData.correcta);
-            
+            const esCorrecto = (zonaElemento.dataset.categoria === preguntaActualData.correcta);
             zonaElemento.classList.add(esCorrecto ? 'feedback-correcto' : 'feedback-incorrecto');
-            
-            elTarjeta.style.transform = 'scale(0) rotate(10deg)';
             elTarjeta.style.opacity = '0';
-            
             procesarResultadoGlobal(esCorrecto, `It was ${preguntaActualData.correcta.toUpperCase()}`);
         }
 
-        // ==========================================
-        // MECHANIC 2: SLIDER
-        // ==========================================
+        // 2. SLIDER
         const inputSlider = document.getElementById('input-slider');
         const valorSliderDisplay = document.getElementById('valor-slider-display');
-
-        inputSlider.addEventListener('input', (e) => {
-            valorSliderDisplay.innerText = e.target.value;
-        });
-
+        inputSlider.addEventListener('input', (e) => { valorSliderDisplay.innerText = e.target.value; });
         function prepararSlider() {
             document.getElementById('ui-slider').classList.remove('hidden');
             document.getElementById('ui-slider').classList.add('flex');
-            
-            inputSlider.min = preguntaActualData.min;
-            inputSlider.max = preguntaActualData.max;
-            
-            // Loop until we find a random value that is NOT the correct answer
-            let valorAleatorio = preguntaActualData.min;
-            while(valorAleatorio === preguntaActualData.correcta) {
-                valorAleatorio = Math.floor(Math.random() * (preguntaActualData.max - preguntaActualData.min + 1)) + preguntaActualData.min;
-            }
-
-            inputSlider.value = valorAleatorio;
-            valorSliderDisplay.innerText = valorAleatorio;
+            inputSlider.min = preguntaActualData.min; inputSlider.max = preguntaActualData.max;
+            let val = preguntaActualData.min;
+            while(val === preguntaActualData.correcta) { val = Math.floor(Math.random() * (preguntaActualData.max - preguntaActualData.min + 1)) + preguntaActualData.min; }
+            inputSlider.value = val; valorSliderDisplay.innerText = val;
         }
-
         function evaluarSlider() {
-            const valorElegido = parseInt(inputSlider.value);
-            const esCorrecto = (valorElegido === preguntaActualData.correcta);
-            procesarResultadoGlobal(esCorrecto, `The exact value was ${preguntaActualData.correcta}`);
+            procesarResultadoGlobal(parseInt(inputSlider.value) === preguntaActualData.correcta, `The exact value was ${preguntaActualData.correcta}`);
         }
 
-        // ==========================================
-        // MECHANIC 3: GRID PATTERN
-        // ==========================================
+        // 3. PATRÓN GRID
         const gridPatron = document.getElementById('grid-patron');
-
         function prepararPatron() {
             document.getElementById('ui-patron').classList.remove('hidden');
             document.getElementById('ui-patron').classList.add('flex');
             gridPatron.innerHTML = ''; 
-            
             for (let i = 1; i <= preguntaActualData.totalElementos; i++) {
                 const btn = document.createElement('div');
                 btn.className = 'elemento-patron bg-slate-700 border-2 border-slate-600 rounded-lg p-4 text-center font-bold text-2xl h-20 flex flex-col items-center justify-center';
-                btn.dataset.id = i;
-                btn.innerHTML = `<span class="text-xs text-slate-400">#${i}</span> <span>${preguntaActualData.icono}</span>`;
-                
-                btn.addEventListener('click', () => {
-                    if(bloqueado) return;
-                    btn.classList.toggle('seleccionado');
-                });
+                btn.dataset.id = i; btn.innerHTML = `<span class="text-xs text-slate-400">#${i}</span> <span>${preguntaActualData.icono}</span>`;
+                btn.addEventListener('click', () => { if(!bloqueado) btn.classList.toggle('seleccionado'); });
                 gridPatron.appendChild(btn);
             }
         }
-
         function evaluarPatron() {
             if(bloqueado) return;
-            const seleccionados = Array.from(document.querySelectorAll('.elemento-patron.seleccionado'))
-                                     .map(el => parseInt(el.dataset.id))
-                                     .sort((a, b) => a - b);
-            
-            const correctos = [...preguntaActualData.correctas].sort((a, b) => a - b);
-            const esCorrecto = JSON.stringify(seleccionados) === JSON.stringify(correctos);
-            procesarResultadoGlobal(esCorrecto, `Correct elements: ${correctos.join(', ')}`);
+            const sel = Array.from(document.querySelectorAll('.elemento-patron.seleccionado')).map(el => parseInt(el.dataset.id)).sort((a, b) => a - b);
+            const cor = [...preguntaActualData.correctas].sort((a, b) => a - b);
+            procesarResultadoGlobal(JSON.stringify(sel) === JSON.stringify(cor), `Correct elements: ${cor.join(', ')}`);
         }
 
-        // ==========================================
-        // MECHANIC 4: SORTABLE LIST
-        // ==========================================
+        // 4. LISTA ORDENAR
         const listaOrdenar = document.getElementById('lista-ordenar');
         let ordenActual = [];
-
         function prepararOrdenar() {
-            document.getElementById('ui-ordenar').classList.remove('hidden');
-            document.getElementById('ui-ordenar').classList.add('flex');
-            
-            // Shuffle the array until it's in a WRONG order by default
-            let mezclado;
-            do {
-                mezclado = barajarArray([...preguntaActualData.correcta]);
-            } while (JSON.stringify(mezclado) === JSON.stringify(preguntaActualData.correcta));
-            
-            ordenActual = mezclado;
-            renderizarListaOrdenar();
+            document.getElementById('ui-ordenar').classList.remove('hidden'); document.getElementById('ui-ordenar').classList.add('flex');
+            let m; do { m = barajarArray([...preguntaActualData.correcta]); } while (JSON.stringify(m) === JSON.stringify(preguntaActualData.correcta));
+            ordenActual = m; renderizarListaOrdenar();
         }
-
         function renderizarListaOrdenar() {
             listaOrdenar.innerHTML = '';
-            
             ordenActual.forEach((item, index) => {
-                const div = document.createElement('div');
-                div.className = 'item-ordenar flex justify-between items-center bg-slate-700 border-2 border-slate-600 rounded-lg p-3 md:p-4 text-lg md:text-xl font-bold shadow-md';
-                
-                const spanTexto = document.createElement('span');
-                spanTexto.innerText = item;
-                
-                const divControles = document.createElement('div');
-                divControles.className = 'flex gap-2 ml-4';
-                
-                // "Up" Button
+                const div = document.createElement('div'); div.className = 'item-ordenar flex justify-between items-center bg-slate-700 border-2 border-slate-600 rounded-lg p-3 md:p-4 text-lg md:text-xl font-bold shadow-md';
+                const spanTexto = document.createElement('span'); spanTexto.innerText = item;
+                const divControles = document.createElement('div'); divControles.className = 'flex gap-2 ml-4';
                 if (index > 0) {
-                    const btnUp = document.createElement('button');
-                    btnUp.innerHTML = '⬆️';
-                    btnUp.className = 'p-2 md:p-3 bg-slate-600 rounded hover:bg-blue-500 transition-colors text-xl';
-                    btnUp.onclick = () => moverItem(index, -1);
+                    const btnUp = document.createElement('button'); btnUp.innerHTML = '⬆️'; btnUp.className = 'p-2 md:p-3 bg-slate-600 rounded hover:bg-blue-500 text-xl';
+                    btnUp.onclick = () => { if (!bloqueado) { const t = ordenActual[index]; ordenActual[index] = ordenActual[index-1]; ordenActual[index-1] = t; renderizarListaOrdenar(); } };
                     divControles.appendChild(btnUp);
                 }
-                
-                // "Down" Button
                 if (index < ordenActual.length - 1) {
-                    const btnDown = document.createElement('button');
-                    btnDown.innerHTML = '⬇️';
-                    btnDown.className = 'p-2 md:p-3 bg-slate-600 rounded hover:bg-blue-500 transition-colors text-xl';
-                    btnDown.onclick = () => moverItem(index, 1);
+                    const btnDown = document.createElement('button'); btnDown.innerHTML = '⬇️'; btnDown.className = 'p-2 md:p-3 bg-slate-600 rounded hover:bg-blue-500 text-xl';
+                    btnDown.onclick = () => { if (!bloqueado) { const t = ordenActual[index]; ordenActual[index] = ordenActual[index+1]; ordenActual[index+1] = t; renderizarListaOrdenar(); } };
                     divControles.appendChild(btnDown);
                 }
-                
-                div.appendChild(spanTexto);
-                div.appendChild(divControles);
-                listaOrdenar.appendChild(div);
+                div.appendChild(spanTexto); div.appendChild(divControles); listaOrdenar.appendChild(div);
+            });
+        }
+        function evaluarOrdenar() {
+            if(bloqueado) return;
+            procesarResultadoGlobal(JSON.stringify(ordenActual) === JSON.stringify(preguntaActualData.correcta), `Correct order: \n${preguntaActualData.correcta.join(' ➔ ')}`);
+        }
+
+        // 5. DECISIÓN (Verdadero/Falso - Población/Muestra)
+        function prepararDecision() {
+            document.getElementById('ui-decision').classList.remove('hidden');
+            document.getElementById('ui-decision').classList.add('flex');
+            const card = document.getElementById('decision-card');
+            
+            // Si no tiene texto principal, usa uno genérico
+            document.getElementById('texto-pregunta').innerText = preguntaActualData.texto.startsWith("[TUTORIAL]") ? "Tutorial:" : "Analyze this statement:";
+            
+            card.innerText = preguntaActualData.texto.replace("[TUTORIAL] ", ""); 
+            card.classList.remove('feedback-correcto', 'feedback-incorrecto');
+            
+            const opt = preguntaActualData.opciones || ["False", "True"];
+            document.getElementById('btn-decision-izq').innerHTML = `<span>${opt[0] === 'False' ? '❌' : '👈'}</span> ${opt[0]}`;
+            document.getElementById('btn-decision-der').innerHTML = `<span>${opt[1] === 'True' ? '✅' : '👉'}</span> ${opt[1]}`;
+
+            card.style.transform = 'scale(0.8)'; card.style.opacity = '0';
+            setTimeout(() => { card.style.transition = 'all 0.3s'; card.style.transform = 'scale(1)'; card.style.opacity = '1'; }, 50);
+        }
+        function evaluarDecision(indexUsuario) {
+            if(bloqueado) return;
+            const esCorrecto = (indexUsuario === preguntaActualData.correcta);
+            document.getElementById('decision-card').classList.add(esCorrecto ? 'feedback-correcto' : 'feedback-incorrecto');
+            
+            const opt = preguntaActualData.opciones || ["False", "True"];
+            procesarResultadoGlobal(esCorrecto, `The correct answer was: ${opt[preguntaActualData.correcta]}`);
+        }
+
+        // 6. EL INTRUSO (Odd One Out)
+        function prepararIntruso() {
+            const contenedor = document.getElementById('ui-intruso');
+            contenedor.classList.remove('hidden'); contenedor.classList.add('grid');
+            contenedor.innerHTML = '';
+            
+            let opcionesConIndex = preguntaActualData.opciones.map((texto, i) => ({ texto, idxOriginal: i }));
+            let opcionesBarajadas = barajarArray(opcionesConIndex);
+
+            opcionesBarajadas.forEach((opcion) => {
+                const btn = document.createElement('button');
+                btn.className = 'bg-slate-700 hover:bg-blue-600 border-2 border-slate-600 text-white font-bold py-6 px-4 rounded-xl text-lg md:text-xl transition transform hover:scale-105 shadow-md min-h-[100px] text-center';
+                btn.innerText = opcion.texto;
+                btn.onclick = () => {
+                    if(bloqueado) return;
+                    btn.classList.add(opcion.idxOriginal === preguntaActualData.correcta ? 'feedback-correcto' : 'feedback-incorrecto');
+                    procesarResultadoGlobal(opcion.idxOriginal === preguntaActualData.correcta, `The odd one out was: \n${preguntaActualData.opciones[preguntaActualData.correcta]}`);
+                };
+                contenedor.appendChild(btn);
             });
         }
 
-        function moverItem(index, direccion) {
-            if (bloqueado) return;
-            const nuevoIndex = index + direccion;
+        // 7. COMPLETAR EL REPORTE (Fill in the Blanks)
+        function prepararCompletar() {
+            const contenedor = document.getElementById('ui-completar');
+            contenedor.classList.remove('hidden'); contenedor.classList.add('flex');
             
-            // Swap positions in the array
-            const temp = ordenActual[index];
-            ordenActual[index] = ordenActual[nuevoIndex];
-            ordenActual[nuevoIndex] = temp;
-            
-            renderizarListaOrdenar();
+            document.getElementById('texto-pregunta').innerText = preguntaActualData.texto.startsWith("[TUTORIAL]") ? "Tutorial:" : "Complete the researcher's report:";
+
+            let htmlTexto = preguntaActualData.texto.replace("[TUTORIAL] ", "");
+            preguntaActualData.opciones.forEach((ops, i) => {
+                let selectHtml = `<select id="select-comp-${i}" class="bg-slate-900 text-blue-300 font-bold p-1 md:p-2 rounded-lg border-2 border-blue-500 mx-2 focus:border-yellow-400 outline-none cursor-pointer">`;
+                selectHtml += `<option value="" disabled selected>...</option>`;
+                ops.forEach((op, j) => {
+                    selectHtml += `<option value="${j}">${op}</option>`;
+                });
+                selectHtml += `</select>`;
+                htmlTexto = htmlTexto.replace(`{${i}}`, selectHtml);
+            });
+            document.getElementById('contenedor-completar-texto').innerHTML = htmlTexto;
         }
 
-        function evaluarOrdenar() {
+        function evaluarCompletar() {
             if(bloqueado) return;
-            const esCorrecto = JSON.stringify(ordenActual) === JSON.stringify(preguntaActualData.correcta);
+            let esCorrecto = true;
+            for(let i=0; i<preguntaActualData.correctas.length; i++) {
+                let val = document.getElementById(`select-comp-${i}`).value;
+                if(val === "" || parseInt(val) !== preguntaActualData.correctas[i]) {
+                    esCorrecto = false;
+                    document.getElementById(`select-comp-${i}`).classList.add('border-red-500', 'text-red-400');
+                } else {
+                    document.getElementById(`select-comp-${i}`).classList.add('border-green-500', 'text-green-400');
+                }
+            }
+            procesarResultadoGlobal(esCorrecto, "Review the concepts carefully.");
+        }
+
+        // 8. CUADRANTES RÁPIDOS (Target Practice)
+        function prepararCuadrantes() {
+            const contenedor = document.getElementById('ui-cuadrantes');
+            contenedor.classList.remove('hidden'); contenedor.classList.add('grid');
+            contenedor.innerHTML = '';
             
-            // If they lose, the feedback will show the correct order
-            const mensajeError = `Correct order: \n${preguntaActualData.correcta.join(' ➔ ')}`;
-            procesarResultadoGlobal(esCorrecto, mensajeError);
+            const colores = [
+                'bg-blue-600 hover:bg-blue-500 border-blue-400',
+                'bg-purple-600 hover:bg-purple-500 border-purple-400',
+                'bg-emerald-600 hover:bg-emerald-500 border-emerald-400',
+                'bg-orange-600 hover:bg-orange-500 border-orange-400'
+            ];
+
+            preguntaActualData.opciones.forEach((textoOpcion, index) => {
+                const btn = document.createElement('button');
+                btn.className = `${colores[index]} border-b-4 text-white font-black py-10 px-4 rounded-2xl text-2xl md:text-3xl transition transform hover:scale-105 shadow-xl min-h-[140px] flex items-center justify-center`;
+                btn.innerText = textoOpcion;
+                
+                btn.onclick = () => {
+                    if(bloqueado) return;
+                    const esCorrecto = (index === preguntaActualData.correcta);
+                    btn.classList.add(esCorrecto ? 'feedback-correcto' : 'feedback-incorrecto');
+                    procesarResultadoGlobal(esCorrecto, `The correct category was: \n${preguntaActualData.opciones[preguntaActualData.correcta]}`);
+                };
+                contenedor.appendChild(btn);
+            });
         }
 
     </script>
