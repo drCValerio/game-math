@@ -313,23 +313,68 @@
         ];
 
         // =====================================================================
-        // 🗄️ BASE DE DATOS - JUEGO REAL (INGLÉS)
+        // 🗄️ DataBase - realgame
         // =====================================================================
         const preguntasDB = [
             { tipo: "drag_drop", texto: "Classify: Exact time to cross the finish line (e.g., 45.32s)", correcta: "continuous" },
             { tipo: "drag_drop", texto: "Classify: Starfleet rank (Cadet, Lieutenant, Captain)", correcta: "ordinal" },
+            { tipo: "drag_drop", texto: "Classify: Weight of packages shipped today (e.g., 2.5 kg)", correcta: "continuous" },
+            { tipo: "drag_drop", texto: "Classify: Number of complaints received per day", correcta: "discrete" },
+            { tipo: "drag_drop", texto: "Classify: T-shirt sizes (Small, Medium, Large, XL)", correcta: "ordinal" },
+            { tipo: "drag_drop", texto: "Classify: Hair color of the participants", correcta: "nominal" },
+            { tipo: "drag_drop", texto: "Classify: Military ranks (Private, Corporal, Sergeant)", correcta: "ordinal" },
+            { tipo: "drag_drop", texto: "Classify: Distance traveled to work (e.g., 12.3 miles)", correcta: "continuous" },
+            { tipo: "drag_drop", texto: "Classify: Types of pets owned (Dog, Cat, Bird)", correcta: "nominal" },
+            { tipo: "slider", texto: "Systematic Sampling: Population 500, needed sample 50. Adjust the step (k).", min: 1, max: 20, correcta: 10 },
+            { tipo: "slider", texto: "Stratified Sampling: 50% of the population are women. For a sample of 200, how many women should be selected?", min: 50, max: 150, correcta: 100 },
+            { tipo: "slider", texto: "Systematic Sampling: Population 90, sample size 30. What is 'k'?", min: 1, max: 10, correcta: 3 },
             { tipo: "slider", texto: "Systematic Sampling: Population 200, needed sample 20. Adjust the step (k).", min: 1, max: 20, correcta: 10 },
+            { tipo: "patron", texto: "Systematic Sampling: k=4. Start at house 1. Select the pattern.", totalElementos: 12, correctas: [1, 5, 9], icono: "🏠" },
+            { tipo: "patron", texto: "Cluster Sampling: Select all the odd-numbered clusters.", totalElementos: 6, correctas: [1, 3, 5], icono: "🌳" },
+            { tipo: "patron", texto: "Systematic Sampling: k=2. Start at student 2.", totalElementos: 8, correctas: [2, 4, 6, 8], icono: "🧑‍🎓" },
             { tipo: "patron", texto: "Systematic Sampling: k=3. Start at house 2. Select the pattern.", totalElementos: 10, correctas: [2, 5, 8], icono: "🏠" },
             { tipo: "ordenar", texto: "Order the levels of measurement from Lowest to Highest information.", correcta: ["Nominal", "Ordinal", "Interval", "Ratio"] },
+            { tipo: "ordenar", texto: "Order these variables from least precise to most precise.", correcta: ["Zip Code (Nominal)", "Movie Rating (Ordinal)", "Height in cm (Continuous)"] },
+            { tipo: "ordenar", texto: "Order the steps of Systematic Sampling.", correcta: ["Define Population", "Calculate step (k)", "Pick random start", "Select every k-th unit"] },
+            { tipo: "ordenar", texto: "Order the levels of measurement from Lowest to Highest information.", correcta: ["Nominal", "Ordinal", "Interval", "Ratio"] },
+            { tipo: "decision", texto: "A convenience sample accurately represents the whole population.", opciones: ["False", "True"], correcta: 0 }, // 0 = False
+            { tipo: "decision", texto: "Measuring the blood pressure of every patient currently in a hospital.", opciones: ["Population", "Sample"], correcta: 0 }, // 0 = Population
+            { tipo: "decision", texto: "Interviewing 30 people exiting a mall is an example of Simple Random Sampling.", opciones: ["False", "True"], correcta: 0 }, // 0 = False
+            { tipo: "decision", texto: "Testing 5 random laptops from a batch of 100 to check for defects.", opciones: ["Population", "Sample"], correcta: 1 }, // 1 = Sample
+            { tipo: "decision", texto: "In Simple Random Sampling, every member has an equal chance of being selected.", opciones: ["False", "True"], correcta: 1 }, // 1 = True
             { tipo: "decision", texto: "In Stratified Sampling, the population is divided into similar groups.", opciones: ["False", "True"], correcta: 1 },
             { tipo: "decision", texto: "Testing 50 random lightbulbs out of a shipment of 10,000.", opciones: ["Population", "Sample"], correcta: 1 },
             { tipo: "intruso", texto: "Find the odd one out (Look for the DISCRETE variable)", opciones: ["Weight (kg)", "Height (cm)", "Number of children", "Temperature (°C)"], correcta: 2 },
+            { tipo: "intruso", texto: "Find the odd one out (Look for the CONTINUOUS variable)", opciones: ["Number of cars", "Shoe size", "Time to run a mile", "Number of pets"], correcta: 2 },
+            { tipo: "intruso", texto: "Find the odd one out (Look for the NON-PROBABILITY sampling)", opciones: ["Simple Random", "Stratified", "Convenience", "Cluster"], correcta: 2 },
+            { tipo: "intruso", texto: "Find the odd one out (Look for the NOMINAL variable)", opciones: ["Temperature", "Blood Type", "Income level", "Age"], correcta: 1 },
             {
                 tipo: "completar",
                 texto: "To measure stress (a {0} variable), the researcher divided employees by department and selected 5 from each (a {1} sampling).",
                 opciones: [ ["Nominal", "Ordinal", "Continuous"], ["Systematic", "Stratified", "Cluster"] ],
                 correctas: [1, 1]
             },
+            {
+                tipo: "completar",
+                texto: "A {0} variable can take any value within a range, while a {1} variable only takes isolated whole values.",
+                opciones: [ 
+                    ["Continuous", "Nominal", "Categorical"], // Para {0}
+                    ["Discrete", "Ordinal", "Qualitative"]    // Para {1}
+                ],
+                correctas: [0, 0] // Continuous, Discrete
+            },
+            {
+                tipo: "completar",
+                texto: "In {0} sampling, the population is divided into subgroups, whereas in {1} sampling, you just pick whoever is easiest to reach.",
+                opciones: [ 
+                    ["Stratified", "Simple Random"], // Para {0}
+                    ["Convenience", "Systematic"]    // Para {1}
+                ],
+                correctas: [0, 0] // Stratified, Convenience
+            },{ tipo: "cuadrantes", texto: "Quick Tap! 'Amount of rainfall in inches' is a variable:", opciones: ["Nominal", "Ordinal", "Discrete", "Continuous"], correcta: 3 },
+            { tipo: "cuadrantes", texto: "Quick Tap! 'Types of cars in a parking lot' is a variable:", opciones: ["Nominal", "Ordinal", "Discrete", "Continuous"], correcta: 0 },
+            { tipo: "cuadrantes", texto: "Quick Tap! 'Number of students in a classroom' is a variable:", opciones: ["Nominal", "Ordinal", "Discrete", "Continuous"], correcta: 2 },
+            { tipo: "cuadrantes", texto: "Quick Tap! 'Medal won (Gold, Silver, Bronze)' is a variable:", opciones: ["Nominal", "Ordinal", "Discrete", "Continuous"], correcta: 1 },
             { tipo: "cuadrantes", texto: "Quick Tap! 'Customer Satisfaction Rating (1-5 stars)' is a variable:", opciones: ["Nominal", "Ordinal", "Discrete", "Continuous"], correcta: 1 }
         ];
 
