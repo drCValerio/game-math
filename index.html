@@ -79,6 +79,11 @@
             accent-color: #3b82f6;
         }
 
+        /* --- Styles: Sortable List (NEW) --- */
+        .item-ordenar {
+            transition: transform 0.2s, background-color 0.2s;
+        }
+
         /* --- Visual Feedback --- */
         .feedback-correcto {
             background-color: rgba(34, 197, 94, 0.2) !important; 
@@ -215,9 +220,19 @@
                 </button>
             </div>
 
+            <!-- Mechanic 4: Sortable List -->
+            <div id="ui-ordenar" class="hidden flex-col items-center w-full">
+                <div id="lista-ordenar" class="w-full max-w-md flex flex-col gap-3 mb-8">
+                    <!-- Items generated dynamically -->
+                </div>
+                <button onclick="evaluarOrdenar()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 px-12 rounded-full text-xl transition transform hover:scale-105 shadow-lg">
+                    Evaluate Order ✓
+                </button>
+            </div>
+
             <!-- Floating Feedback Message -->
             <div id="mensaje-feedback" class="absolute inset-0 flex items-center justify-center pointer-events-none opacity-0 transition-opacity z-50">
-                <div id="feedback-texto" class="bg-slate-900 text-white text-3xl font-black px-8 py-4 rounded-2xl shadow-2xl border-4 border-transparent text-center"></div>
+                <div id="feedback-texto" class="bg-slate-900 text-white text-3xl font-black px-8 py-4 rounded-2xl shadow-2xl border-4 border-transparent text-center w-[90%] md:w-auto"></div>
             </div>
 
         </div>
@@ -264,7 +279,13 @@
             { tipo: "patron", texto: "🏘️ Systematic Sampling: k=3. Start at house 2.", totalElementos: 10, correctas: [2, 5, 8], icono: "🏠" },
             { tipo: "patron", texto: "🍕 Audit: Select branches 1 and 5.", totalElementos: 5, correctas: [1, 5], icono: "🍕" },
             { tipo: "patron", texto: "🌳 Cluster Sampling: Check all the even-numbered plots.", totalElementos: 6, correctas: [2, 4, 6], icono: "🌳" },
-            { tipo: "patron", texto: "🧑‍🎓 Select students 3, 6, and 9 from the list.", totalElementos: 9, correctas: [3, 6, 9], icono: "🧑‍🎓" }
+            { tipo: "patron", texto: "🧑‍🎓 Select students 3, 6, and 9 from the list.", totalElementos: 9, correctas: [3, 6, 9], icono: "🧑‍🎓" },
+
+            // --- TYPE 4: SORTABLE LIST ---
+            // 'correcta' must be the array in the EXACT correct order.
+            { tipo: "ordenar", texto: "📊 Order these variables by hierarchy (Lowest to Highest level of measurement)", correcta: ["Nominal", "Ordinal", "Interval", "Ratio"] },
+            { tipo: "ordenar", texto: "📝 Order the steps of a basic statistical study", correcta: ["Collect Data", "Organize Data", "Analyze Data", "Interpret Results"] },
+            { tipo: "ordenar", texto: "🥉 Order these marathon results from fastest to slowest", correcta: ["1st Place", "2nd Place", "3rd Place", "4th Place"] }
         ];
 
         // --- GAME ENGINE ---
@@ -353,11 +374,13 @@
             document.getElementById('ui-dragdrop').classList.add('hidden');
             document.getElementById('ui-slider').classList.add('hidden');
             document.getElementById('ui-patron').classList.add('hidden');
+            document.getElementById('ui-ordenar').classList.add('hidden');
 
             // Load specific mechanic
             if (preguntaActualData.tipo === "drag_drop") prepararDragDrop();
             else if (preguntaActualData.tipo === "slider") prepararSlider();
             else if (preguntaActualData.tipo === "patron") prepararPatron();
+            else if (preguntaActualData.tipo === "ordenar") prepararOrdenar();
 
             // Start Timer
             iniciarTemporizador();
@@ -417,7 +440,7 @@
                 multiplicadorBase = 1;
                 vidas -= 1;
                 
-                mostrarFeedback(`ERROR! ${mensajeExplicacion}`, "border-red-500 text-red-400", false);
+                mostrarFeedback(`ERROR! \n${mensajeExplicacion}`, "border-red-500 text-red-400", false);
                 document.body.style.animation = 'vibrar 0.4s';
                 setTimeout(() => document.body.style.animation = '', 400);
             }
@@ -427,7 +450,7 @@
             setTimeout(() => {
                 preguntaActualIndex++;
                 cargarPregunta();
-            }, 2000);
+            }, 3000); // Wait 3 seconds to let them read the feedback before next question
         }
 
         function actualizarUI() {
@@ -444,14 +467,14 @@
 
         function mostrarFeedback(mensaje, clasesColor, acierto) {
             elFeedbackTexto.innerText = mensaje;
-            elFeedbackTexto.className = `bg-slate-900 text-3xl font-black px-8 py-6 rounded-2xl shadow-2xl border-4 text-center ${clasesColor}`;
+            elFeedbackTexto.className = `bg-slate-900 text-2xl md:text-3xl font-black px-8 py-6 rounded-2xl shadow-2xl border-4 text-center w-[90%] md:w-auto ${clasesColor}`;
             elFeedbackContainer.style.opacity = '1';
 
             if(acierto) elMarcador.classList.add('marcador-aumento');
             else elMarcador.classList.add('marcador-disminucion');
             
             setTimeout(() => elMarcador.classList.remove('marcador-aumento', 'marcador-disminucion'), 300);
-            setTimeout(() => elFeedbackContainer.style.opacity = '0', 1800);
+            setTimeout(() => elFeedbackContainer.style.opacity = '0', 2800);
         }
 
         function finalizarJuego(completado) {
@@ -514,6 +537,7 @@
         zonasDrop.forEach(zona => {
             zona.addEventListener('dragover', (e) => { e.preventDefault(); if(!bloqueado) zona.classList.add('drag-over'); });
             zona.addEventListener('dragleave', () => zona.classList.remove('drag-over'));
+            
             zona.addEventListener('drop', (e) => {
                 e.preventDefault();
                 zona.classList.remove('drag-over');
@@ -521,6 +545,7 @@
                     evaluarDragDrop(zona);
                 }
             });
+            
             zona.addEventListener('click', () => {
                 if (tarjetaSeleccionadaTactil && !bloqueado) evaluarDragDrop(zona);
             });
@@ -536,10 +561,12 @@
         function evaluarDragDrop(zonaElemento) {
             const categoriaElegida = zonaElemento.dataset.categoria;
             const esCorrecto = (categoriaElegida === preguntaActualData.correcta);
+            
             zonaElemento.classList.add(esCorrecto ? 'feedback-correcto' : 'feedback-incorrecto');
             
             elTarjeta.style.transform = 'scale(0) rotate(10deg)';
             elTarjeta.style.opacity = '0';
+            
             procesarResultadoGlobal(esCorrecto, `It was ${preguntaActualData.correcta.toUpperCase()}`);
         }
 
@@ -563,7 +590,6 @@
             // Loop until we find a random value that is NOT the correct answer
             let valorAleatorio = preguntaActualData.min;
             while(valorAleatorio === preguntaActualData.correcta) {
-                // Formula to get a random integer between min and max
                 valorAleatorio = Math.floor(Math.random() * (preguntaActualData.max - preguntaActualData.min + 1)) + preguntaActualData.min;
             }
 
@@ -610,6 +636,84 @@
             const correctos = [...preguntaActualData.correctas].sort((a, b) => a - b);
             const esCorrecto = JSON.stringify(seleccionados) === JSON.stringify(correctos);
             procesarResultadoGlobal(esCorrecto, `Correct elements: ${correctos.join(', ')}`);
+        }
+
+        // ==========================================
+        // MECHANIC 4: SORTABLE LIST
+        // ==========================================
+        const listaOrdenar = document.getElementById('lista-ordenar');
+        let ordenActual = [];
+
+        function prepararOrdenar() {
+            document.getElementById('ui-ordenar').classList.remove('hidden');
+            document.getElementById('ui-ordenar').classList.add('flex');
+            
+            // Shuffle the array until it's in a WRONG order by default
+            let mezclado;
+            do {
+                mezclado = barajarArray([...preguntaActualData.correcta]);
+            } while (JSON.stringify(mezclado) === JSON.stringify(preguntaActualData.correcta));
+            
+            ordenActual = mezclado;
+            renderizarListaOrdenar();
+        }
+
+        function renderizarListaOrdenar() {
+            listaOrdenar.innerHTML = '';
+            
+            ordenActual.forEach((item, index) => {
+                const div = document.createElement('div');
+                div.className = 'item-ordenar flex justify-between items-center bg-slate-700 border-2 border-slate-600 rounded-lg p-3 md:p-4 text-lg md:text-xl font-bold shadow-md';
+                
+                const spanTexto = document.createElement('span');
+                spanTexto.innerText = item;
+                
+                const divControles = document.createElement('div');
+                divControles.className = 'flex gap-2 ml-4';
+                
+                // "Up" Button
+                if (index > 0) {
+                    const btnUp = document.createElement('button');
+                    btnUp.innerHTML = '⬆️';
+                    btnUp.className = 'p-2 md:p-3 bg-slate-600 rounded hover:bg-blue-500 transition-colors text-xl';
+                    btnUp.onclick = () => moverItem(index, -1);
+                    divControles.appendChild(btnUp);
+                }
+                
+                // "Down" Button
+                if (index < ordenActual.length - 1) {
+                    const btnDown = document.createElement('button');
+                    btnDown.innerHTML = '⬇️';
+                    btnDown.className = 'p-2 md:p-3 bg-slate-600 rounded hover:bg-blue-500 transition-colors text-xl';
+                    btnDown.onclick = () => moverItem(index, 1);
+                    divControles.appendChild(btnDown);
+                }
+                
+                div.appendChild(spanTexto);
+                div.appendChild(divControles);
+                listaOrdenar.appendChild(div);
+            });
+        }
+
+        function moverItem(index, direccion) {
+            if (bloqueado) return;
+            const nuevoIndex = index + direccion;
+            
+            // Swap positions in the array
+            const temp = ordenActual[index];
+            ordenActual[index] = ordenActual[nuevoIndex];
+            ordenActual[nuevoIndex] = temp;
+            
+            renderizarListaOrdenar();
+        }
+
+        function evaluarOrdenar() {
+            if(bloqueado) return;
+            const esCorrecto = JSON.stringify(ordenActual) === JSON.stringify(preguntaActualData.correcta);
+            
+            // If they lose, the feedback will show the correct order
+            const mensajeError = `Correct order: \n${preguntaActualData.correcta.join(' ➔ ')}`;
+            procesarResultadoGlobal(esCorrecto, mensajeError);
         }
 
     </script>
